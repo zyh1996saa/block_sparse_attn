@@ -1,0 +1,29 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Model weights (too large for GitHub)
+saved_models/
+*.npz
+
+# Training logs
+Logger/logs/
+Logger/training_log.csv
+*.tfevents.*
+
+# Temporary files
+temp-plot.html
+*.tmp
+*.temp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

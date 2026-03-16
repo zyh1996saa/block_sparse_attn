@@ -1,0 +1,203 @@
+# 配电系统类说明文档
+
+## 1. EleNode (电气节点)
+- 物理意义：代表电网中的一个节点（母线）
+- 属性：
+  - ID: 唯一标识符 (str)
+  - name: 节点名称 (str)
+  - nd: 节点编号 (str)
+  - volt: 电压等级 (kV, float)
+  - bus: 在pandapower网络中的母线编号 (int)
+  - device_type: 固定为"elenode"
+  - possible_neighbor_nodes: 可能连接的邻居节点列表
+  - act_neighbor_nodes: 实际连接的邻居节点列表
+  - closest_110_node: 最近的110kV节点对象
+  - closest_mainbus_node: 最近的10kV母线节点对象
+  - closest_start_feeder_node: 最近的10kV馈线起始节点对象
+  - mainbus_10kV: 是否是10kV母线 (bool)
+  - start_feeder_10kV: 是否是10kV馈线起始节点 (bool)
+  - in_feeder_10kV: 是否在10kV馈线中 (bool)
+  - concat_node_feeder: 是否是馈线组间联络节点 (bool)
+  - gateway_node_10kV: 是否是10kV网络入口节点 (bool)
+  - concat_node_10kV: 是否是联络节点 (bool)
+  - gateway_node_10kV_otherside: 是否与入口节点相连 (bool)
+  - pl: 有功负荷 (MW, float)
+  - ql: 无功负荷 (MVar, float)
+  - pg: 有功发电 (MW, float)
+  - qg: 无功发电 (MVar, float)
+  - withload: 是否带有负荷 (0或1)
+
+## 2. TransformerType2 (两绕组变压器)
+- 物理意义：两绕组变压器设备
+- 属性：
+  - ID: 唯一标识符 (str)
+  - name: 变压器名称 (str)
+  - I_nd_ID, J_nd_ID: 连接的两个节点ID (str)
+  - I_off, J_off: 开关状态 ('0'=闭合)
+  - closed: 整体闭合状态 (1=闭合)
+  - I_loadLoss, J_loadLoss: 负载损耗值
+  - I_S, J_S: 额定容量
+  - I_r, J_r: 电阻值
+  - I_rPU, J_rPU: 电阻标幺值
+  - I_Volt, J_Volt: 额定电压
+  - I_x, J_x: 电抗值
+  - I_xPU, J_xPU: 电抗标幺值
+  - I_nd, J_nd: 连接的两个节点对象
+  - device_type: 固定为"transformer-type2"
+  - gateway_transformer: 是否是关口变压器 (bool)
+
+## 3. TransformerType3 (三绕组变压器)
+- 物理意义：三绕组变压器设备
+- 属性：包含两绕组所有属性，额外增加K相相关属性
+  - K_nd_ID: 第三节点ID (str)
+  - K_off: 开关状态
+  - K_loadLoss: 负载损耗值
+  - K_S: 额定容量
+  - K_r: 电阻值
+  - K_rPU: 电阻标幺值
+  - K_Volt: 额定电压
+  - K_x: 电抗值
+  - K_xPU: 电抗标幺值
+  - K_nd: 连接的第三节点对象
+
+## 4. Load (负荷)
+- 物理意义：电力负荷
+- 属性：
+  - ID: 唯一标识符 (str)
+  - name: 负荷名称 (str)
+  - volt: 电压等级 (str)
+  - nd_ID: 连接节点ID (str)
+  - P: 有功功率 (MW, float)
+  - Q: 无功功率 (MVar, float)
+  - off: 开关状态 ('0'=投入)
+  - device_type: 固定为"load"
+  - nd: 连接节点对象
+  - gateway: 是否是关口负荷 (bool)
+
+## 5. ACline (交流线路)
+- 物理意义：输电线路
+- 属性：
+  - ID: 唯一标识符 (str)
+  - name: 线路名称 (str)
+  - volt: 电压等级 (kV, float)
+  - r: 电阻 (Ω/km, float)
+  - ratedCurrent: 额定电流 (A)
+  - x: 电抗 (Ω/km, float)
+  - b: 电纳 (nF/km, float)
+  - I_nd_ID, J_nd_ID: 两端节点ID (str)
+  - I_off, J_off: 开关状态 ('0'=闭合)
+  - closed: 整体闭合状态 ('1'=闭合)
+  - I_nd, J_nd: 两端节点对象
+  - device_type: 固定为"acline"
+  - concat_switch: 是否是联络开关 (bool)
+  - gateway: 是否是关口支路 (bool)
+  - closest_110_node: 最近的110kV节点
+  - closest_110_nodes: 最近的110kV节点对
+  - max_i_ka: 最大允许电流 (kA, float)
+
+## 6. Breaker (断路器)
+- 物理意义：断路器设备
+- 属性：
+  - ID: 唯一标识符 (str)
+  - name: 断路器名称 (str)
+  - volt: 电压等级 (str)
+  - I_nd_ID, J_nd_ID: 两端节点ID (str)
+  - closed: 开关状态 ('1'=闭合)
+  - I_nd, J_nd: 两端节点对象
+  - device_type: 固定为"breaker"
+  - r: 电阻 (0.01 Ω)
+  - x: 电抗 (0.01 Ω)
+  - b: 电纳 (0)
+  - max_i_ka: 最大电流 (9999 kA)
+
+## 7. Disconnector (隔离开关)
+- 物理意义：隔离开关设备
+- 属性：同断路器(Breaker)，device_type固定为"disconnector"
+
+## 8. DisconnectorWithFeeders (带馈线隔离开关)
+- 物理意义：连接馈线的隔离开关
+- 属性：
+  - f_bus, t_bus: 连接的两端母线编号 (int)
+  - closed: 开关状态 ('1'=闭合)
+  - device_type: 固定为"disconnector"
+  - concat_feeder: 是否是馈线间联络线 (bool)
+  - feeder2sub: 是否是馈线-母线连接线 (bool)
+  - sub_node: 连接的母线节点
+  - feeder_node: 连接的馈线节点
+
+## 9. NodeCluster (节点簇)
+- 物理意义：归属于同一110kV节点的节点集合
+- 属性：
+  - nodes: 节点列表
+  - closest_110_node: 对应的110kV节点
+  - breakers: 断路器列表
+  - disconnectors: 隔离开关列表
+  - aclines: 交流线路列表
+  - gateways: 关口支路列表
+  - concat_switches: 联络开关列表
+  - concated_node_cluster: 相连的其他节点簇
+
+## 10. NodeGroup (节点组)
+- 物理意义：通过联络线连接的节点簇集合
+- 属性：
+  - name: 组名称
+  - nodes: 所有节点列表
+  - closest_110_nodes: 110kV节点列表
+  - all_lines: 所有线路列表
+  - breakers/disconnectors/aclines: 分类线路列表
+  - gateways/concat_switches: 关口/联络线路列表
+  - node_cluster_list: 包含的节点簇列表
+  - feasible_switch_states: 可行开关状态组合
+
+## 11. FeederGroup (馈线组)
+- 物理意义：一组相关的馈线
+- 属性：
+  - nodes: 组内节点
+  - gateways: 网关列表
+  - lines: 线路列表
+  - feeder_start_node: 馈线起始节点
+  - name: 组名称
+  - concat_lines_with_other_feeder_group: 联络线列表
+  - concat_feeder_group: 相连的其他馈线组
+  - main_bus_10kV: 10kV母线节点
+
+## 12. FeederCluster (馈线簇)
+- 物理意义：多个相连的馈线组
+- 属性：
+  - name: 簇名称
+  - nodes: 所有节点
+  - feeder_start_nodes: 馈线起始节点列表
+  - lines: 所有线路
+  - gateways: 网关列表
+  - concat_switches: 联络开关列表
+  - feeder_group_list: 包含的馈线组
+  - feasible_switch_states: 可行开关状态组合
+
+## 13. UnionFind (并查集)
+- 物理意义：处理连通性关系
+- 属性：
+  - parent: 父节点字典
+  - rank: 节点层级字典
+- 方法：add(), find(), union(), copy()
+
+## 14. CimEParser (CIM-E解析器)
+- 物理意义：解析电网模型Excel文件
+- 属性：每个sheet对应一个DataFrame属性
+
+## 15. PandaPowerFlowCalculator (潮流计算器)
+- 物理意义：核心计算引擎
+- 属性：
+  - slack_nd: 平衡节点
+  - all_lines: 所有线路
+  - nodeID2node: 节点ID到对象映射
+  - bus2node: 母线编号到对象映射
+  - node_clusters_10kV: 10kV节点簇
+  - feeder_groups: 馈线组列表
+  - feeder_clusters: 馈线簇列表
+  - islands/main_island: 电气岛信息
+- 主要方法：
+  - scan_neighbor_nodes(): 扫描节点连接关系
+  - create_pf(): 创建潮流网络
+  - caculate_flow(): 执行潮流计算
+  - find_islands(): 查找电气岛
+  - sample_a_pf_case(): 采样新工况
