@@ -251,9 +251,9 @@ If you use this code in your research, please cite:
 ```bibtex
 @software{block_sparse_attn,
   title = {Block Sparse Attention for Power Flow Prediction},
-  author = {Your Name},
+  author = {Yuhong Zhu},
   year = {2024},
-  url = {https://github.com/yourusername/block_sparse_attn}
+  url = {https://github.com/zyh1996saa/block_sparse_attn}
 }
 ```
 
